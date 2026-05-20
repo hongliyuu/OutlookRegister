@@ -1,11 +1,15 @@
 {
     "choose_browser": "patchright",
     "email_suffix": "@hotmail.com",
-    "proxy": "http://127.0.0.1:7897",
+    "proxy": {
+        "server": "http://us.lajiaohttp.net:2000",
+        "username": "qcfvn17921-region-US-sid-j2H9w7sj-t-5",
+        "password": "ujgdlt5p"
+    },
     "bot_protection_wait": 11,
     "max_captcha_retries": 2,
-    "concurrent_flows": 5,
-    "max_tasks": 5,
+    "concurrent_flows": 1,
+    "max_tasks": 1,
     "oauth2": {
         "enable_oauth2": false,
         "client_id": "",

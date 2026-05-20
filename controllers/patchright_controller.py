@@ -9,10 +9,18 @@ class PatchrightController(BaseBrowserController):
         try:
             p = sync_playwright().start() 
 
-            proxy_settings = {
-                "server": self.proxy,
-                "bypass": "localhost",
-            } if self.proxy else None
+            if isinstance(self.proxy, dict):
+                proxy_settings = {
+                    "server": self.proxy.get("server"),
+                    "username": self.proxy.get("username"),
+                    "password": self.proxy.get("password"),
+                    "bypass": "localhost",
+                } if self.proxy.get("server") else None
+            else:
+                proxy_settings = {
+                    "server": self.proxy,
+                    "bypass": "localhost",
+                } if self.proxy else None
 
             b = p.chromium.launch(
                 headless=False,            
@@ -52,7 +60,6 @@ class PatchrightController(BaseBrowserController):
                 page.locator('.draw').wait_for(state="detached")
                 try:
 
-                    # 简单的认为加载8秒后成功，暂不考虑请求.
                     page.locator('[role="status"][aria-label="正在加载..."]').wait_for(timeout=5000)
                     page.wait_for_timeout(8000)
                     if page.get_by_text('一些异常活动').count() or page.get_by_text('此站点正在维护，暂时无法使用，请稍后重试。').count() > 0:

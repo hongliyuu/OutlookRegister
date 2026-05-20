@@ -15,10 +15,18 @@ class PlaywrightController(BaseBrowserController):
         try:
             p = sync_playwright().start()
 
-            proxy_settings = {
-                "server": self.proxy,
-                "bypass": "localhost",
-            } if self.proxy else None
+            if isinstance(self.proxy, dict):
+                proxy_settings = {
+                    "server": self.proxy.get("server"),
+                    "username": self.proxy.get("username"),
+                    "password": self.proxy.get("password"),
+                    "bypass": "localhost",
+                } if self.proxy.get("server") else None
+            else:
+                proxy_settings = {
+                    "server": self.proxy,
+                    "bypass": "localhost",
+                } if self.proxy else None
             b = p.chromium.launch(
                 executable_path=self.browser_path,
                 headless=False,            
@@ -62,7 +70,6 @@ class PlaywrightController(BaseBrowserController):
                     break
 
             except:
-                # raise TimeoutError
                 page.wait_for_timeout(5000)
                 page.keyboard.press('Enter')
                 page.wait_for_event("request", lambda req: req.url.startswith("https://browser.events.data.microsoft.com"), timeout=10000)
@@ -92,4 +99,3 @@ class PlaywrightController(BaseBrowserController):
                 try:
                     p.stop()
                 except Exception: pass
-
